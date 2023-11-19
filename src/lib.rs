@@ -6,13 +6,13 @@ use kernel_alloc::KernelAlloc;
 #[global_allocator]
 static GLOBAL: KernelAlloc = KernelAlloc;
 
-mod dbg;
-mod driver;
+mod debug;
+mod entry;
 mod types;
 
-use crate::driver::entry;
+use crate::entry::entry;
 #[allow(unused_imports)]
-use dbg::*;
+use debug::*;
 use types::*;
 
 // Needed for fix linker error
