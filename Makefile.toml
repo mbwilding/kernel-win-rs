@@ -1,0 +1,43 @@
+[env]
+CARGO_MAKE_EXTEND_WORKSPACE_MAKEFILE = true
+
+[env.development]
+TARGET_PATH = "target/x86_64-pc-windows-msvc/debug"
+
+[env.release]
+TARGET_PATH = "target/x86_64-pc-windows-msvc/release"
+BUILD_FLAGS = "--release"
+
+[tasks.build-driver]
+script = [
+    "cargo build %BUILD_FLAGS%"
+]
+
+[tasks.rename-driver]
+dependencies = ["build-driver"]
+ignore_errors = true
+script = [
+    "cd %TARGET_PATH%",
+    "rename kernel_win_rs.dll kernel_win_rs.sys",
+]
+
+[tasks.sign-driver]
+dependencies = ["build-driver", "rename-driver"]
+script = [
+    "\"%WIN_SDK_TOOLS%\"\\MakeCert.exe -r -pe -ss PrivateCertStore -n CN=kernel_win_rs_cert kernel_win_rs_cert.cer",
+    "\"%WIN_SDK_TOOLS%\"\\signtool.exe sign /fd sha256 /v /s PrivateCertStore /n kernel_win_rs_cert /t http://timestamp.digicert.com /a %TARGET_PATH%/kernel_win_rs.sys",
+]
+
+[tasks.deploy]
+dependencies = ["sign-driver"]
+script = [
+    "mkdir bin",
+    "move kernel_win_rs_cert.cer bin\\kernel_win_rs_cert.cer",
+    "move %TARGET_PATH%\\kernel_win_rs.sys bin\\kernel_win_rs.sys"
+]
+
+[tasks.cleanup]
+script = [
+    "rmdir /s /q bin",
+    "cargo clean",
+]

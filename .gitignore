@@ -1,0 +1,10 @@
+# Rust
+/target/
+/Cargo.lock
+
+# JetBrains
+.idea/*
+!.idea/runConfigurations/
+
+# Driver
+/bin/

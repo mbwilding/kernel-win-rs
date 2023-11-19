@@ -1,0 +1,21 @@
+[package]
+name = "kernel-win-rs"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+kernel-alloc = "0.2"
+
+[build-dependencies]
+anyhow = "1.0"
+winreg = "0.51"
+
+[lib]
+path = "src/lib.rs"
+crate-type = ["cdylib"]
+
+[profile.dev]
+panic = "abort"
+
+[profile.release]
+panic = "abort"
