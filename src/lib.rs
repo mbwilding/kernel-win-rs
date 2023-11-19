@@ -15,13 +15,13 @@ use crate::entry::entry;
 use debug::*;
 use types::*;
 
-// Needed for fix linker error
+// Needed to fix linker error
 #[no_mangle]
 pub extern "system" fn __CxxFrameHandler3(_: *mut u8, _: *mut u8, _: *mut u8, _: *mut u8) -> i32 {
     unimplemented!()
 }
 
-// Needed for fix linker error. Floating point calculations aren`t allowed when running in the Windows Kernel
+// Needed to fix linker error | Floating point calculations aren`t allowed when running in the Windows Kernel
 #[export_name = "_fltused"]
 static _FLTUSED: i32 = 0;
 
@@ -38,6 +38,5 @@ fn panic(_info: &core::panic::PanicInfo) -> ! {
 #[no_mangle]
 pub extern "system" fn driver_entry(_driver: PVOID, _path: PVOID) -> u32 {
     entry();
-
     0
 }
